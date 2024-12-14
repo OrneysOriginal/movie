@@ -1,0 +1,12 @@
+<footer>
+    <div class="container">
+        {% for message in messages %}
+          {% if message.tags == "success" %}
+            <button type="button" class="btn btn-outline-success">{{ message }}</button>
+          {% endif %}
+          {% if message.tags == "error" %}
+            <button type="button" class="btn btn-outline-danger">{{ message }}</button>
+          {% endif %}
+        {% endfor %}
+    </div>
+</footer>

@@ -1,0 +1,10 @@
+venv
+.env
+pyproject.toml
+movie/media/
+media
+media/
+.idea
+__pycache__
+mypy.ini
+setup.cfg!/movie/media/

@@ -1,0 +1,18 @@
+{% load static %}
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          {% with request.resolver_match.view_name as view_name %}
+            {% if request.user.is_authenticated or request.session.username %}
+
+              {% endif %}
+            {% endif %}
+            {% if not request.user.is_authenticated and not request.session.username %}
+
+            {% endif %}
+          {% endwith %}
+        </ul>
+      </div>
+    </nav>
+  </header>
