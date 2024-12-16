@@ -5,11 +5,18 @@
         <ul class="navbar-nav mr-auto">
           {% with request.resolver_match.view_name as view_name %}
             {% if request.user.is_authenticated or request.session.username %}
-
-              {% endif %}
+              <form action="{% url "person:logout" %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Выйти</button>
+              </form>
             {% endif %}
             {% if not request.user.is_authenticated and not request.session.username %}
-
+              <li class="nav-item active">
+                <a class="nav-link {% if view_name == "person:login" %}nav-link disabled{% endif %}" href="{% url "person:login" %}">Войти</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link {% if view_name == "person:registration" %}nav-link disabled{% endif %}" href="{% url "person:registration" %}">Зарегистрироваться</a>
+              </li>
             {% endif %}
           {% endwith %}
         </ul>

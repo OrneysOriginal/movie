@@ -8,3 +8,4 @@ media/
 __pycache__
 mypy.ini
 setup.cfg!/movie/media/
+setup.cfg

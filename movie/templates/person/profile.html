@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <form method="post">
+      {% for field in profile %}
+        {{ field }}
+      {% endfor %}
+      {% for field in user %}
+        {{ field }}
+      {% endfor %}
+  </form>
+</div>
+{% endblock %}
