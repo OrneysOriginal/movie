@@ -1,6 +1,7 @@
 venv
 .env
 pyproject.toml
+migrations
 movie/media/
 media
 media/
