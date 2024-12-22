@@ -29,18 +29,18 @@ class LoginView(View):
                 if user is not None:
                     login(self.request, user)
                     success(self.request, "Вы успешно вошли")
-                    return
+                    return redirect(reverse("person:profile"))
 
                 error(
                     self.request, "Пользователя с таким именем и паролем нет"
                 )
-                return
+                return redirect(reverse("person:login"))
 
             error(self.request, "Заполните форму")
-            return
+            return redirect(reverse("person:login"))
 
         error(self.request, "Вы уже аутентифицированы")
-        return
+        return redirect(reverse("person:profile"))
 
 
 class RegistrationView(View):

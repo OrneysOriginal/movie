@@ -6,7 +6,6 @@ from catalog.models import Film, Genre, Comment
 class AdminCatalog(admin.ModelAdmin):
     list_display = (
         Film.name.field.name,
-        Film.genre.field.name,
         Film.mark.field.name,
         Film.is_eighteen.field.name,
         Film.description.field.name,

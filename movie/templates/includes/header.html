@@ -5,6 +5,9 @@
         <ul class="navbar-nav mr-auto">
           {% with request.resolver_match.view_name as view_name %}
             {% if request.user.is_authenticated or request.session.username %}
+              <li class="nav-item active">
+                <a class="nav-link {% if view_name == "catalog:catalog" %}nav-link disabled{% endif %}" href="{% url "catalog:catalog" %}">Каталог</a>
+              </li>
               <form action="{% url "person:logout" %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary">Выйти</button>

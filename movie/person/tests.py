@@ -55,9 +55,7 @@ class RegistrationTest(TestCase):
             ),
         ]
     )
-    def test_registration_form_registration_user_post(
-        self, data, status_code, url
-    ):
+    def test_registration_form_registration_user(self, data, status_code, url):
         response = self.registered_user.post(
             path=reverse("person:registration"), data=data
         )
@@ -69,7 +67,7 @@ class RegistrationTest(TestCase):
             HTTPStatus.OK,
         ]
     )
-    def test_registration_form_registration_user_get(self, status_code):
+    def test_registration_form_registration_user(self, status_code):
         response = self.registered_user.get(
             path=reverse("person:registration")
         )
@@ -91,9 +89,43 @@ class RegistrationTest(TestCase):
             ),
         ]
     )
-    def test_registration_form_login_user_post(self, data, status_code, url):
+    def test_registration_form_login_user(self, data, status_code, url):
         response = self.login_user.post(
             path=reverse("person:registration"), data=data
+        )
+        self.assertEqual(response.status_code, status_code)
+        self.assertEqual(response.url, url)
+
+
+class LoginTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.login_user = Client()
+        user_data = {
+            "username": "Orneys1",
+            "password": "qazwsxedc123",
+            "repeat_password": "qazwsxedc123",
+            "email": "georgijsavin17122@gmail.com",
+            "image": "",
+            "birthday": "2006-02-17",
+        }
+        cls.login_user.post(
+            path=reverse("person:registration"), data=user_data
+        )
+
+    @parameterized.expand(
+        [
+            (
+                {"username": "Orneys1", "password": "qazwsxedc123"},
+                HTTPStatus.FOUND,
+                reverse("person:profile"),
+            ),
+        ]
+    )
+    def test_login_form_login_user(self, data, status_code, url):
+        response = self.login_user.post(
+            path=reverse("person:login"), data=data
         )
         self.assertEqual(response.status_code, status_code)
         self.assertEqual(response.url, url)

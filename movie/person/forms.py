@@ -1,8 +1,6 @@
 from django import forms
 import datetime
 
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 
 SIXTY_YEARS_IN_DAYS = 365 * 60
 TEN_YEARS_IN_DAYS = 365 * 10
