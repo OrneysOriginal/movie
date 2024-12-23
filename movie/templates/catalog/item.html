@@ -15,4 +15,13 @@
 <p class="text-start">{{ film.mark }}</p>
 <video controls preload="metadata" src="{{ film.movie }}">
 </video>
+<form method="post">
+  {% csrf_token %}
+  {% for field in comment_form %}
+    {{ field }}
+  {% endfor %}
+</form>
+{% for comment in comments %}
+  {{ comment }}
+{% endfor %}
 {% endblock %}

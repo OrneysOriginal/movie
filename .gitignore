@@ -1,6 +1,5 @@
 venv
 .env
-pyproject.toml
 migrations
 movie/media/
 media
@@ -8,7 +7,5 @@ media/
 .idea
 __pycache__
 mypy.ini
-setup.cfg!/movie/media/
-setup.cfg
 htmlcov/
 .coverage

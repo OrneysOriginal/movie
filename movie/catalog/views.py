@@ -1,8 +1,13 @@
 from django.shortcuts import render, redirect, reverse
-from django.contrib.messages import success, error
+from django.contrib.messages import error, success
 from django.views import View
 
-from catalog.models import Film, Genre
+from catalog.forms import CommentForm
+from catalog.models import Film, Genre, Comment
+from catalog.validators import (
+    validate_space_len_comment,
+    validate_length_comment,
+)
 
 
 class CatalogView(View):
@@ -32,6 +37,10 @@ class ItemView(View):
             context = {
                 "film": Film.objects.get(id=kwargs.get("pk")),
                 "genres": Genre.objects.filter(film__id=kwargs.get("pk")),
+                "comment_form": CommentForm(),
+                "comments": Comment.objects.select_related("film").only(
+                    "user_name", "comment"
+                ),
             }
             return render(self.request, "catalog/item.html", context)
 
@@ -40,7 +49,28 @@ class ItemView(View):
 
     def post(self, *args, **kwargs):
         if self.request.user.is_authenticated:
-            pass
+            comment = self.request.POST.get("comment")
+            if self.check_length_comment(comment):
+                self.add_comment(comment, self.request.user, kwargs.get("pk"))
+                success(self.request, "")
+                return redirect(
+                    reverse("catalog:item", args=[kwargs.get("pk")])
+                )
+
+            error(self.request, "Пустой комментарий")
+            return redirect(reverse("catalog:item", args=[kwargs.get("pk")]))
 
         error(self.request, "Вы не вошли в аккаунт")
         return redirect(reverse("person:login"))
+
+    @staticmethod
+    def check_length_comment(comment):
+        if validate_space_len_comment(comment) and validate_length_comment(
+            comment
+        ):
+            return True
+        return False
+
+    @staticmethod
+    def add_comment(comment, user, film_id):
+        Comment.objects.create(user=user, comment=comment, film_id=film_id)

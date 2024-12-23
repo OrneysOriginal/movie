@@ -1,10 +1,10 @@
+from django.contrib.auth.models import User
 from django.db import models
-
 from core.models import AbstractImageModel
 
 
 class Film(AbstractImageModel):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=2047)
     image = models.ImageField(upload_to="preview/%y/%m/%d")
@@ -21,7 +21,7 @@ class Film(AbstractImageModel):
 
 
 class Genre(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=127)
 
     def __str__(self):
@@ -29,9 +29,17 @@ class Genre(models.Model):
 
 
 class Comment(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     film = models.OneToOneField(
         Film,
         on_delete=models.CASCADE,
     )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     comment = models.TextField(max_length=2047)
+    comment_date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.comment
+
+    class Meta:
+        ordering = ["comment_date"]

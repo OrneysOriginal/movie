@@ -1,9 +1,10 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase, Client
 from django.urls import reverse
 from parameterized import parameterized
 from http import HTTPStatus
 
-from catalog.models import Film
+from catalog.models import Film, Comment
 
 
 class CatalogTest(TestCase):
@@ -109,3 +110,28 @@ class ItemTest(TestCase):
         )
         self.assertEqual(response.status_code, status_code)
         self.assertRedirects(response, url)
+
+    @parameterized.expand(
+        [
+            ("Крутой фильм", True, HTTPStatus.FOUND),
+            ("", False, HTTPStatus.OK),
+            ("q", True, HTTPStatus.FOUND),
+            ("    ", False, HTTPStatus.OK),
+        ]
+    )
+    def test_add_comment(self, comment, is_valid, status_code):
+        cnt_comment = Comment.objects.count()
+        if is_valid:
+            response = self.login_user.post(
+                path=reverse("catalog:item", args=[self.film.id]),
+                data={"comment": comment},
+            )
+            self.assertEqual(cnt_comment + 1, Comment.objects.count())
+            self.assertEqual(response.status_code, status_code)
+        else:
+            with self.assertRaises(ValidationError):
+                self.login_user.post(
+                    path=reverse("catalog:item", args=[self.film.id]),
+                    data={"comment": comment},
+                )
+            self.assertEqual(cnt_comment, Comment.objects.count())

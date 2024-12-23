@@ -55,7 +55,7 @@ class RegistrationTest(TestCase):
             ),
         ]
     )
-    def test_registration_form_registration_user(self, data, status_code, url):
+    def test_registration_form_post(self, data, status_code, url):
         response = self.registered_user.post(
             path=reverse("person:registration"), data=data
         )
@@ -67,7 +67,7 @@ class RegistrationTest(TestCase):
             HTTPStatus.OK,
         ]
     )
-    def test_registration_form_registration_user(self, status_code):
+    def test_registration_form_get(self, status_code):
         response = self.registered_user.get(
             path=reverse("person:registration")
         )

@@ -1,0 +1,18 @@
+[tool.black]
+line-length = 79
+target-version = ['py310', 'py311', 'py312']
+exclude = '''
+/(
+  | migrations
+  | \.venv         # exclude a few common directories in the
+  | \.git          # root of the project
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.eggs
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
