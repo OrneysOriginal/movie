@@ -8,9 +8,12 @@
               <li class="nav-item active">
                 <a class="nav-link {% if view_name == "catalog:catalog" %}nav-link disabled{% endif %}" href="{% url "catalog:catalog" %}">Каталог</a>
               </li>
+              <li class="nav-item active">
+                <a class="nav-link {% if view_name == "person:profile" %}nav-link disabled{% endif %}" href="{% url "person:profile" %}">Профиль</a>
+              </li>
               <form action="{% url "person:logout" %}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Выйти</button>
+                <button type="submit" class="btn btn-danger">Выйти</button>
               </form>
             {% endif %}
             {% if not request.user.is_authenticated and not request.session.username %}

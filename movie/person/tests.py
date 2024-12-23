@@ -129,3 +129,42 @@ class LoginTest(TestCase):
         )
         self.assertEqual(response.status_code, status_code)
         self.assertEqual(response.url, url)
+
+
+class ProfileTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.login_user = Client()
+        user_data = {
+            "username": "Orneys1",
+            "password": "qazwsxedc123",
+            "repeat_password": "qazwsxedc123",
+            "email": "georgijsavin17122@gmail.com",
+            "image": "",
+            "birthday": "2006-02-17",
+        }
+        cls.login_user.post(
+            path=reverse("person:registration"), data=user_data
+        )
+
+    @parameterized.expand(
+        [
+            (
+                {
+                    "username": "Orneys2",
+                    "email": "123savin@gmail.com",
+                    "image": "",
+                    "birthday": "1999-12-12",
+                },
+                HTTPStatus.FOUND,
+            ),
+        ]
+    )
+    def test_change_profile(self, data, status_code):
+        self.login_user.post(path=reverse("person:profile"), data=data)
+        response = self.login_user.get(path=reverse("person:profile"))
+        content = response.content.decode()
+        self.assertIn(data.get("username"), content)
+        self.assertIn(data.get("email"), content)
+        self.assertIn(data.get("birthday"), content)

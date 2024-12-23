@@ -39,7 +39,7 @@ class ItemView(View):
                 "genres": Genre.objects.filter(film__id=kwargs.get("pk")),
                 "comment_form": CommentForm(),
                 "comments": Comment.objects.select_related("film").only(
-                    "user_name", "comment"
+                    "film", "user", "comment"
                 ),
             }
             return render(self.request, "catalog/item.html", context)

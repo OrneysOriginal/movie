@@ -30,3 +30,22 @@ class RegistrationForm(forms.Form):
             }
         ),
     )
+
+
+class ProfileForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(), required=False)
+    image = forms.ImageField(required=False)
+    email = forms.EmailField(widget=forms.EmailInput(), required=False)
+    birthday = forms.DateField(
+        required=False,
+        widget=forms.DateInput(
+            attrs={
+                "type": "date",
+                "min": datetime.date.today()
+                - datetime.timedelta(days=SIXTY_YEARS_IN_DAYS),
+                "max": datetime.date.today()
+                - datetime.timedelta(days=TEN_YEARS_IN_DAYS),
+                "class": "form-control",
+            }
+        ),
+    )

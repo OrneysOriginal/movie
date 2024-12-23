@@ -2,12 +2,24 @@
 {% block content %}
 <div class="container">
   <form method="post">
-      {% for field in profile %}
-        {{ field }}
-      {% endfor %}
-      {% for field in user %}
-        {{ field }}
-      {% endfor %}
+      {% csrf_token %}
+      <div class="input-group mb-3">
+          <span class="input-group-text">{{ profile.image_tmb }}</span>
+          {{ profile_form.image }}
+      </div>
+      <div class="input-group mb-3">
+          <span class="input-group-text">{{ user.username }}</span>
+          {{ profile_form.username }}
+      </div>
+      <div class="input-group mb-3">
+          <span class="input-group-text">{{ user.email }}</span>
+          {{ profile_form.email }}
+      </div>
+      <div class="input-group mb-3">
+          <span class="input-group-text">{{ profile.birthday }}</span>
+          {{ profile_form.birthday }}
+      </div>
+      <button type="submit" class="btn btn-success">Сохранить</button>
   </form>
 </div>
 {% endblock %}

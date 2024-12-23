@@ -20,8 +20,10 @@
   {% for field in comment_form %}
     {{ field }}
   {% endfor %}
+  <button type="submit" class="btn btn-primary">Отправить</button>
 </form>
 {% for comment in comments %}
+  {{ comment.user }}
   {{ comment }}
 {% endfor %}
 {% endblock %}

@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.contrib.messages import success, error
 
-from person.forms import RegistrationForm, LoginForm
+from person.forms import RegistrationForm, LoginForm, ProfileForm
 from person.models import Profile
 
 
@@ -103,7 +103,7 @@ class RegistrationView(View):
 
 
 class LogoutView(View):
-    def get(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         if self.request.user.is_authenticated:
             logout(self.request)
             success(self.request, "Вы вышли из аккаунта")
@@ -118,16 +118,34 @@ class ProfileView(View):
         if self.request.user.is_authenticated:
             context = {
                 "user": self.request.user,
-                "profile": Profile.objects.get(id=self.request.user.id),
+                "profile": Profile.objects.get(user=self.request.user.id),
+                "profile_form": ProfileForm(),
             }
-            return render(self.request, "person:profile", context)
+            return render(self.request, "person/profile.html", context)
 
         error(self.request, "Вы не аутентифицированы")
         return redirect(reverse("person:login"))
 
     def post(self, *args, **kwargs):
         if self.request.user.is_authenticated:
-            pass
+            data = self.request.POST
+            self.check_and_rewrite_fields_user(data, self.request.user)
+            success(self.request, "Данные сохранены")
+            return redirect(reverse("person:profile"))
 
         error(self.request, "Вы не аутентифицированы")
         return redirect(reverse("person:login"))
+
+    @staticmethod
+    def check_and_rewrite_fields_user(data, user):
+        profile = Profile.objects.get(user=user)
+        if data.get("username"):
+            user.username = data.get("username")
+        if data.get("email"):
+            user.username = data.get("username")
+        if data.get("birthday"):
+            profile.username = data.get("birthday")
+        if data.get("image"):
+            profile.username = data.get("image")
+        user.save()
+        profile.save()
