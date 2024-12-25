@@ -8,10 +8,9 @@ from catalog.models import Film, Comment
 
 
 class CatalogTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.login_user = Client()
+    def setUp(self):
+        super().setUp()
+        self.login_user = Client()
         user_data = {
             "username": "Orneys1",
             "password": "qazwsxedc123",
@@ -20,7 +19,7 @@ class CatalogTest(TestCase):
             "image": "",
             "birthday": "2006-02-17",
         }
-        cls.login_user.post(
+        self.login_user.post(
             path=reverse("person:registration"), data=user_data
         )
 
@@ -46,10 +45,9 @@ class CatalogTest(TestCase):
 
 
 class ItemTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.login_user = Client()
+    def setUp(self):
+        super().setUp()
+        self.login_user = Client()
         user_data = {
             "username": "Orneys1",
             "password": "qazwsxedc123",
@@ -58,10 +56,11 @@ class ItemTest(TestCase):
             "image": "",
             "birthday": "2006-02-17",
         }
-        cls.login_user.post(
+        self.login_user.post(
             path=reverse("person:registration"), data=user_data
         )
-        cls.film = Film.objects.create(
+
+        self.film = Film.objects.create(
             id=1,
             name="Film1",
             description="Film1",
@@ -74,7 +73,7 @@ class ItemTest(TestCase):
             is_eighteen=True,
             director="Director",
         )
-        cls.unlogin_user = Client()
+        self.unlogin_user = Client()
         user_data = {
             "username": "Orneys1",
             "password": "qazwsxedc123",
@@ -83,10 +82,10 @@ class ItemTest(TestCase):
             "image": "",
             "birthday": "2006-02-17",
         }
-        cls.unlogin_user.post(
+        self.unlogin_user.post(
             path=reverse("person:registration"), data=user_data
         )
-        cls.unlogin_user.logout()
+        self.unlogin_user.logout()
 
     @parameterized.expand(
         [

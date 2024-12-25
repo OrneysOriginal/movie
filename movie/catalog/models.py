@@ -12,9 +12,9 @@ class Film(AbstractImageModel):
     premiere = models.DateField()
     country = models.CharField(max_length=63)
     movie = models.FileField(upload_to="film/%Y/%m/%d/")
-    mark = models.FloatField()
+    mark = models.FloatField(default=0)
     is_eighteen = models.BooleanField()
-    director = models.CharField()
+    director = models.CharField(max_length=63)
     genre = models.ManyToManyField(
         "Genre",
     )

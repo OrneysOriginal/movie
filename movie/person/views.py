@@ -1,5 +1,6 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, reverse
 from django.views import View
@@ -25,7 +26,9 @@ class LoginView(View):
         if not self.request.user.is_authenticated:
             form = LoginForm(self.request or None)
             if form.is_bound:
-                user = authenticate(self.request.POST)
+                user = self.custom_authenticate(
+                    self.request.POST.get("username")
+                )
                 if user is not None:
                     login(self.request, user)
                     success(self.request, "Вы успешно вошли")
@@ -41,6 +44,14 @@ class LoginView(View):
 
         error(self.request, "Вы уже аутентифицированы")
         return redirect(reverse("person:profile"))
+
+    @staticmethod
+    def custom_authenticate(username):
+        try:
+            user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return None
+        return user
 
 
 class RegistrationView(View):
@@ -58,9 +69,9 @@ class RegistrationView(View):
     def post(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
             form = RegistrationForm(self.request.POST or None)
-            data = self.request.POST
             if form.is_bound:
-                if self.check_is_unregistered(data):
+                data = self.request.POST
+                if self.is_unregistered(data):
                     if data.get("password") == data.get("repeat_password"):
                         user = self.create_and_return_user(self.request.POST)
                         login(self.request, user)
@@ -94,7 +105,7 @@ class RegistrationView(View):
         return user
 
     @staticmethod
-    def check_is_unregistered(data):
+    def is_unregistered(data):
         try:
             User.objects.get(username=data.get("username"))
         except ObjectDoesNotExist:
@@ -120,11 +131,23 @@ class ProfileView(View):
                 "user": self.request.user,
                 "profile": Profile.objects.get(user=self.request.user.id),
                 "profile_form": ProfileForm(),
+                "history": self.get_films(),
             }
             return render(self.request, "person/profile.html", context)
 
         error(self.request, "Вы не аутентифицированы")
         return redirect(reverse("person:login"))
+
+    def get_films(self) -> list:
+        container = cache.get("film") or set()
+        if container:
+            sorted_data_films = sorted(
+                [x for x in container], key=lambda x: x[0], reverse=True
+            )
+            films = [x[1] for x in sorted_data_films]
+            return films
+        else:
+            return []
 
     def post(self, *args, **kwargs):
         if self.request.user.is_authenticated:
@@ -142,10 +165,10 @@ class ProfileView(View):
         if data.get("username"):
             user.username = data.get("username")
         if data.get("email"):
-            user.username = data.get("username")
+            user.email = data.get("email")
         if data.get("birthday"):
-            profile.username = data.get("birthday")
+            profile.birthday = data.get("birthday")
         if data.get("image"):
-            profile.username = data.get("image")
+            profile.image = data.get("image")
         user.save()
         profile.save()

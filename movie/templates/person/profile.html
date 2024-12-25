@@ -21,5 +21,16 @@
       </div>
       <button type="submit" class="btn btn-success">Сохранить</button>
   </form>
+    <div class="d-flex flex-wrap align-items-stretch">
+{% for film in history %}
+<div class="card" style="width: 18rem;">
+  {{ film.image_tmb }}
+  <div class="card-body">
+    <h5 class="card-title">{{ film.name }}</h5>
+    <p class="card-text">{{ film.description|truncatechars:80 }}</p>
+    <a href="{% url "catalog:item" pk=film.id %}" class="btn btn-primary">Смотреть</a>
+  </div>
+</div>
+{% endfor %}
 </div>
 {% endblock %}

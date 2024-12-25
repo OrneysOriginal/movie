@@ -5,10 +5,9 @@ from http import HTTPStatus
 
 
 class RegistrationTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.login_user = Client()
+    def setUp(self):
+        super().setUp()
+        self.login_user = Client()
         user_data = {
             "username": "Orneys1",
             "password": "qazwsxedc123",
@@ -17,15 +16,15 @@ class RegistrationTest(TestCase):
             "image": "",
             "birthday": "2006-02-17",
         }
-        cls.login_user.post(
+        self.login_user.post(
             path=reverse("person:registration"), data=user_data
         )
-        cls.login_user.login(
+        self.login_user.login(
             username=user_data.get("username"),
             password=user_data.get("password"),
         )
 
-        cls.registered_user = Client()
+        self.registered_user = Client()
         user_data = {
             "username": "Orneys2",
             "password": "qazwsxedc123",
@@ -34,10 +33,10 @@ class RegistrationTest(TestCase):
             "image": "",
             "birthday": "2006-02-17",
         }
-        cls.registered_user.post(
+        self.registered_user.post(
             path=reverse("person:registration"), data=user_data
         )
-        cls.registered_user.logout()
+        self.registered_user.logout()
 
     @parameterized.expand(
         [
@@ -46,7 +45,7 @@ class RegistrationTest(TestCase):
                     "username": "Orneys1",
                     "password": "qazwsxedc123",
                     "repeat_password": "qazwsxedc123",
-                    "email": "savingeorgiy@yandex.ru",
+                    "email": "sawingeorgiy@gmail.com",
                     "image": "",
                     "birthday": "2006-02-17",
                 },
@@ -98,10 +97,9 @@ class RegistrationTest(TestCase):
 
 
 class LoginTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.login_user = Client()
+    def setUp(self):
+        super().setUp()
+        self.login_user = Client()
         user_data = {
             "username": "Orneys1",
             "password": "qazwsxedc123",
@@ -110,7 +108,7 @@ class LoginTest(TestCase):
             "image": "",
             "birthday": "2006-02-17",
         }
-        cls.login_user.post(
+        self.login_user.post(
             path=reverse("person:registration"), data=user_data
         )
 
@@ -132,10 +130,9 @@ class LoginTest(TestCase):
 
 
 class ProfileTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.login_user = Client()
+    def setUp(self):
+        super().setUp()
+        self.login_user = Client()
         user_data = {
             "username": "Orneys1",
             "password": "qazwsxedc123",
@@ -144,7 +141,7 @@ class ProfileTest(TestCase):
             "image": "",
             "birthday": "2006-02-17",
         }
-        cls.login_user.post(
+        self.login_user.post(
             path=reverse("person:registration"), data=user_data
         )
 
@@ -157,14 +154,13 @@ class ProfileTest(TestCase):
                     "image": "",
                     "birthday": "1999-12-12",
                 },
-                HTTPStatus.FOUND,
             ),
         ]
     )
-    def test_change_profile(self, data, status_code):
+    def test_change_profile(self, data):
         self.login_user.post(path=reverse("person:profile"), data=data)
         response = self.login_user.get(path=reverse("person:profile"))
         content = response.content.decode()
         self.assertIn(data.get("username"), content)
         self.assertIn(data.get("email"), content)
-        self.assertIn(data.get("birthday"), content)
+        self.assertIn("Dec. 12, 1999", content)

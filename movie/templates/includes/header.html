@@ -15,6 +15,11 @@
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">Выйти</button>
               </form>
+              {% if request.user.is_superuser %}
+                <li class="nav-item active">
+                  <a class="nav-link {% if view_name == "catalog:add_film" %}nav-link disabled{% endif %}" href="{% url "catalog:add_film" %}">Добавить фильм</a>
+                </li>
+              {% endif %}
             {% endif %}
             {% if not request.user.is_authenticated and not request.session.username %}
               <li class="nav-item active">
